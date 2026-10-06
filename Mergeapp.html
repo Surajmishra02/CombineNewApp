@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Zip Suite</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg:#f5f6fa;
+  --card:#ffffff;
+  --text:#1c2033;
+  --muted:#7b8298;
+  --line:#eaecf3;
+  --hover:#f1f2f8;
+
+  --side:#0f1226;
+  --side2:#151936;
+  --sidetext:#a9afc9;
+
+  --shadow:0 12px 32px rgba(20,24,60,.12);
+}
+
+body.dark{
+  --bg:#0b0d1a;
+  --card:#141830;
+  --text:#e8eaf6;
+  --muted:#8d94b3;
+  --line:#232948;
+  --hover:#1c2140;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  font-size:13px;
+}
+
+body{
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+button,
+input,
+select{
+  font-family:inherit;
+}
+
+ul{
+  list-style:none;
+}
+
+/* ================= ICON ================= */
+
+.ico{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.ico svg{
+  width:16px;
+  height:16px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+
+/* ================= SIDEBAR ================= */
+
+.side{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:270px;
+  background:linear-gradient(180deg,var(--side),var(--side2));
+  color:var(--sidetext);
+  display:flex;
+  flex-direction:column;
+  z-index:70;
+  transition:.25s;
+}
+
+.brand{
+  height:64px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 18px;
+  color:#fff;
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:.3px;
+  cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.brand .lg{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  background:rgba(255,255,255,.12);
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  font-size:15px;
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.menu{
+  flex:1;
+  overflow-y:auto;
+  padding:12px 10px 20px;
+}
+
+.menu::-webkit-scrollbar{
+  width:5px;
+}
+
+.menu::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.12);
+  border-radius:5px;
+}
+
+.label{
+  font-size:10px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:#6a7195;
+  padding:15px 12px 7px;
+  font-weight:600;
+}
+
+
+/* ================= MENU ITEM ================= */
+
+.mi{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 12px;
+  border-radius:9px;
+  cursor:pointer;
+  font-size:12.5px;
+  font-weight:500;
+  user-select:none;
+  position:relative;
+  transition:.15s;
+  color:var(--sidetext);
+}
+
+.mi:hover{
+  background:rgba(255,255,255,.06);
+  color:#fff;
+}
+
+.mi.active{
+  background:rgba(255,255,255,.1);
+  color:#fff;
+}
+
+.mi.active::before{
+  content:'';
+  position:absolute;
+  left:-10px;
+  top:8px;
+  bottom:8px;
+  width:3px;
+  border-radius:3px;
+  background:#fff;
+}
+
+.mi .t{
+  flex:1;
+}
+
+.arrow{
+  opacity:.6;
+  transition:transform .2s;
+}
+
+.arrow svg{
+  width:13px;
+  height:13px;
+}
+
+.open > .mi .arrow{
+  transform:rotate(90deg);
+  opacity:1;
+}
+
+
+/* ================= MODULE ICONS ================= */
+
+.mod{
+  margin-bottom:5px;
+}
+
+.mod > .mi{
+  padding:7px 9px;
+  border:1px solid transparent;
+}
+
+.mod.open > .mi{
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.08);
+}
+
+
+/* Colored square behind URL image */
+
+.mod-logo{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  border-radius:9px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  box-shadow:0 3px 8px rgba(0,0,0,.18);
+}
+
+.mod-logo img{
+  width:25px !important;
+  height:25px !important;
+  max-width:25px !important;
+  object-fit:contain;
+  display:block;
+  opacity:1 !important;
+}
+
+
+/* Module colors */
+
+.logo-schedule{
+  background:#4998ed;
+}
+
+.logo-clock{
+  background:#438fe5;
+}
+
+.logo-forecast{
+  background:#08bfae;
+}
+
+.logo-inventory{
+  background:#9870ed;
+}
+
+.logo-ordering{
+  background:#8b008b;
+}
+
+.logo-training{
+  background:#079ac1;
+}
+
+
+/* Module name */
+
+.mod-name{
+  flex:1;
+  color:#fff;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:16px;
+  white-space:nowrap;
+}
+
+.mod-name small{
+  display:block;
+  color:#8f97b7;
+  font-size:9.5px;
+  font-weight:400;
+  margin-top:1px;
+}
+
+
+/* ================= CHILD MENU ================= */
+
+.children{
+  display:none;
+  margin:4px 0 8px 25px;
+  padding-left:8px;
+  border-left:1px solid rgba(255,255,255,.1);
+}
+
+.open > .children{
+  display:block;
+}
+
+.children .mi{
+  padding:7px 10px;
+  font-size:12px;
+  color:#98a0c0;
+}
+
+.children .mi:hover{
+  color:#fff;
+}
+
+.children .mi.active::before{
+  left:-9px;
+}
+
+.children .children{
+  margin-left:10px;
+}
+
+.sfoot{
+  padding:12px 18px;
+  border-top:1px solid rgba(255,255,255,.07);
+  font-size:11px;
+  color:#6a7195;
+  display:flex;
+  justify-content:space-between;
+}
+
+
+/* ================= TOPBAR ================= */
+
+.wrap{
+  margin-left:270px;
+  transition:.25s;
+}
+
+.top{
+  position:sticky;
+  top:0;
+  z-index:50;
+  height:64px;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 24px;
+}
+
+.hamb{
+  display:none;
+  cursor:pointer;
+  color:var(--text);
+}
+
+.hamb svg{
+  width:20px;
+  height:20px;
+}
+
+.sbox{
+  position:relative;
+  flex:1;
+  max-width:340px;
+}
+
+.sbox .ico{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+}
+
+.sbox input{
+  width:100%;
+  padding:9px 12px 9px 34px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  background:var(--bg);
+  color:var(--text);
+  outline:none;
+}
+
+.sbox input:focus{
+  border-color:#5b5bd6;
+}
+
+.right{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.chip{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--muted);
+  padding:7px 11px;
+  border-radius:9px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.chip b{
+  color:var(--text);
+  font-weight:600;
+}
+
+.ib{
+  width:35px;
+  height:35px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  background:var(--card);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  color:var(--muted);
+  position:relative;
+}
+
+.ib:hover{
+  background:var(--hover);
+  color:var(--text);
+}
+
+.dot{
+  position:absolute;
+  top:7px;
+  right:8px;
+  width:7px;
+  height:7px;
+  background:#5b5bd6;
+  border-radius:50%;
+  border:2px solid var(--card);
+}
+
+
+/* ================= PROFILE ================= */
+
+.profile{
+  position:relative;
+  margin-left:4px;
+}
+
+.av{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  cursor:pointer;
+  padding:3px 10px 3px 3px;
+  border-radius:30px;
+  border:1px solid var(--line);
+}
+
+.av:hover{
+  background:var(--hover);
+}
+
+.av i{
+  width:29px;
+  height:29px;
+  border-radius:50%;
+  background:var(--side);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-style:normal;
+  font-weight:600;
+  font-size:12px;
+}
+
+.av b{
+  font-weight:600;
+  font-size:12px;
+}
+
+.pd{
+  position:absolute;
+  right:0;
+  top:48px;
+  width:230px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  padding:6px;
+  display:none;
+}
+
+.profile.open .pd{
+  display:block;
+}
+
+.ph{
+  padding:10px 12px 12px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:5px;
+}
+
+.ph small{
+  color:var(--muted);
+  font-size:11.5px;
+}
+
+.pi{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  border-radius:7px;
+  cursor:pointer;
+  font-size:12.5px;
+  color:var(--text);
+}
+
+.pi .ico{
+  color:var(--muted);
+}
+
+.pi:hover{
+  background:var(--hover);
+}
+
+
+/* ================= PAGE ================= */
+
+main{
+  padding:26px 24px 70px;
+  max-width:1600px;
+}
+
+.crumb{
+  color:var(--muted);
+  font-size:11.5px;
+  margin-bottom:4px;
+}
+
+h1{
+  font-size:20px;
+  font-weight:700;
+}
+
+.sub{
+  color:var(--muted);
+  margin-top:3px;
+  font-size:12.5px;
+}
+
+.bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--side);
+  color:#fff;
+  border:0;
+  padding:9px 15px;
+  border-radius:9px;
+  cursor:pointer;
+  font:inherit;
+  font-weight:600;
+  font-size:12.5px;
+}
+
+.btn:hover{
+  opacity:.88;
+}
+
+.btn.g{
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+
+.btn.g:hover{
+  background:var(--hover);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:14px;
+}
+
+.w{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px 18px;
+  position:relative;
+  transition:.2s;
+}
+
+.w:hover{
+  box-shadow:0 8px 24px rgba(20,24,60,.07);
+}
+
+.w.wide{
+  grid-column:span 2;
+}
+
+.dashboard-grid > .w:nth-child(6n + 1){
+  background:linear-gradient(145deg,#fffaf0,var(--card) 72%);
+}
+
+.dashboard-grid > .w:nth-child(6n + 2){
+  background:linear-gradient(145deg,#f1f8ff,var(--card) 72%);
+}
+
+.dashboard-grid > .w:nth-child(6n + 3){
+  background:linear-gradient(145deg,#effaf5,var(--card) 72%);
+}
+
+.dashboard-grid > .w:nth-child(6n + 4){
+  background:linear-gradient(145deg,#f7f1ff,var(--card) 72%);
+}
+
+.dashboard-grid > .w:nth-child(6n + 5){
+  background:linear-gradient(145deg,#fff2f0,var(--card) 72%);
+}
+
+.dashboard-grid > .w:nth-child(6n){
+  background:linear-gradient(145deg,#f0f9fa,var(--card) 72%);
+}
+
+body.dark .dashboard-grid > .w:nth-child(6n + 1){
+  background:linear-gradient(145deg,#282418,var(--card) 72%);
+}
+
+body.dark .dashboard-grid > .w:nth-child(6n + 2){
+  background:linear-gradient(145deg,#1c2638,var(--card) 72%);
+}
+
+body.dark .dashboard-grid > .w:nth-child(6n + 3){
+  background:linear-gradient(145deg,#1b3029,var(--card) 72%);
+}
+
+body.dark .dashboard-grid > .w:nth-child(6n + 4){
+  background:linear-gradient(145deg,#292136,var(--card) 72%);
+}
+
+body.dark .dashboard-grid > .w:nth-child(6n + 5){
+  background:linear-gradient(145deg,#342323,var(--card) 72%);
+}
+
+body.dark .dashboard-grid > .w:nth-child(6n){
+  background:linear-gradient(145deg,#1b2d32,var(--card) 72%);
+}
+
+.wh{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.wi{
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  background:#f1f3f8;
+  color:#69738c;
+  border:0;
+  display:grid;
+  place-items:center;
+}
+
+body.dark .wi{
+  background:#252a3d;
+  color:#b7bfd8;
+  border:0;
+}
+
+.w .wi-dollar,
+.w .wi-bar{
+  background:#fff0d9;
+  color:#c47b16;
+}
+
+.w .wi-users,
+.w .wi-beach,
+.w .wi-layers{
+  background:#e6f7ef;
+  color:#279568;
+}
+
+.w .wi-clock,
+.w .wi-brief,
+.w .wi-alert{
+  background:#e8efff;
+  color:#5577d5;
+}
+
+.w .wi-package,
+.w .wi-trash,
+.w .wi-receipt{
+  background:#f1eaff;
+  color:#895fc8;
+}
+
+.w .wi-cart,
+.w .wi-truck{
+  background:#ffe9e8;
+  color:#d66b63;
+}
+
+.w .wi-star,
+.w .wi-mega{
+  background:#fff4d9;
+  color:#bd8a19;
+}
+
+body.dark .w .wi-dollar,
+body.dark .w .wi-bar{
+  background:#45351f;
+  color:#ffd084;
+}
+
+body.dark .w .wi-users,
+body.dark .w .wi-beach,
+body.dark .w .wi-layers{
+  background:#1d3b32;
+  color:#76d9ad;
+}
+
+body.dark .w .wi-clock,
+body.dark .w .wi-brief,
+body.dark .w .wi-alert{
+  background:#27365b;
+  color:#9cb4ff;
+}
+
+body.dark .w .wi-package,
+body.dark .w .wi-trash,
+body.dark .w .wi-receipt{
+  background:#392c50;
+  color:#c5a4ff;
+}
+
+body.dark .w .wi-cart,
+body.dark .w .wi-truck{
+  background:#4a2c32;
+  color:#ffaaa3;
+}
+
+body.dark .w .wi-star,
+body.dark .w .wi-mega{
+  background:#44391f;
+  color:#f2d27b;
+}
+
+.wh h3{
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--muted);
+}
+
+.w .x{
+  position:absolute;
+  top:12px;
+  right:12px;
+  cursor:pointer;
+  color:var(--muted);
+  opacity:0;
+}
+
+.w:hover .x{
+  opacity:1;
+}
+
+.big{
+  font-size:26px;
+  font-weight:700;
+}
+
+.mut{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.up{
+  color:#2f9e6b;
+  font-size:12px;
+  font-weight:600;
+}
+
+.dn{
+  color:#d1566a;
+  font-size:12px;
+  font-weight:600;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12.5px;
+}
+
+td,th{
+  padding:8px 4px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+}
+
+th{
+  color:var(--muted);
+  font-weight:500;
+  font-size:11.5px;
+}
+
+tr:last-child td{
+  border-bottom:0;
+}
+
+.bars{
+  display:flex;
+  align-items:flex-end;
+  gap:12px;
+  height:120px;
+  margin-top:6px;
+}
+
+.bars div{
+  flex:1;
+  background:var(--side);
+  border-radius:5px 5px 0 0;
+  position:relative;
+  min-height:6px;
+}
+
+.bars div.f{
+  background:repeating-linear-gradient(
+    45deg,
+    #ececfb,
+    #ececfb 4px,
+    #eaecf3 4px,
+    #eaecf3 8px
+  );
+}
+
+.bars div span{
+  position:absolute;
+  bottom:-20px;
+  left:0;
+  right:0;
+  text-align:center;
+  font-size:10.5px;
+  color:var(--muted);
+}
+
+.prog{
+  height:6px;
+  background:var(--hover);
+  border-radius:6px;
+  overflow:hidden;
+  margin:6px 0 12px;
+}
+
+.prog i{
+  display:block;
+  height:100%;
+  background:var(--side);
+  border-radius:6px;
+}
+
+.tag{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:6px 11px;
+  border-radius:8px;
+  margin:3px 4px 0 0;
+  cursor:pointer;
+}
+
+.tag:hover{
+  background:var(--side);
+  color:#fff;
+}
+
+.li{
+  padding:9px 0;
+  border-bottom:1px solid var(--line);
+  font-size:12.5px;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.li:last-child{
+  border-bottom:0;
+}
+
+.empty{
+  text-align:center;
+  padding:70px 20px;
+  border:1.5px dashed var(--line);
+  border-radius:16px;
+  color:var(--muted);
+}
+
+.empty .wi{
+  margin:0 auto 12px;
+  width:44px;
+  height:44px;
+}
+
+.empty h2{
+  color:var(--text);
+  font-size:16px;
+  margin-bottom:6px;
+}
+
+.ph2{
+  border:1.5px dashed var(--line);
+  border-radius:14px;
+  padding:60px;
+  text-align:center;
+  color:var(--muted);
+}
+
+
+/* ================= OPERATIONS DASHBOARD STYLES ================= */
+
+.op-app {
+    width: 100%;
+    max-width: 1600px;
+    margin: auto;
+}
+
+.op-topbar {
+    height: 43px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.op-select,
+.op-date-control,
+.op-pdf-btn,
+.op-settings {
+    height: 32px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+}
+
+.op-select {
+    width: 128px;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.op-date-control {
+    overflow: hidden;
+}
+
+.op-arrow {
+    width: 28px;
+    height: 32px;
+    border: none;
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.op-date {
+    min-width: 92px;
+    height: 100%;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+}
+
+.op-pdf-btn {
+    width: 29px;
+    background: #d8192f;
+    color: white;
+    border-color: #d8192f;
+    cursor: pointer;
+}
+
+.kpi-wrap {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 2px 6px;
+    scrollbar-width: thin;
+    margin-bottom: 15px;
+}
+
+.kpi {
+    flex: 0 0 156px;
+    height: 108px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    box-shadow: 0 2px 5px rgba(34, 44, 75, 0.06);
+    padding: 10px 9px 7px;
+    position: relative;
+}
+
+.kpi-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.kpi-icon {
+    width: 23px;
+    height: 23px;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 12px;
+}
+
+.kpi-icon.blue { background: #3e74dc; }
+.kpi-icon.violet { background: #ad44ee; }
+.kpi-icon.red { background: #ff4260; }
+.kpi-icon.mint { background: #27c981; }
+.kpi-icon.orange { background: #ff7745; }
+.kpi-icon.green { background: #09b977; }
+.kpi-icon.purple { background: #9c36e8; }
+
+.kpi-chart {
+    margin-left: auto;
+    color: #00a85c;
+    font-size: 15px;
+}
+
+.kpi-value {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 12px;
+}
+
+.kpi-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: absolute;
+    left: 9px;
+    right: 9px;
+    bottom: 6px;
+    border-top: 1px solid var(--line);
+}
+
+.kpi-footer div {
+    font-size: 9px;
+    padding-top: 4px;
+    color: var(--muted);
+}
+
+.kpi-footer div + div {
+    text-align: right;
+    border-left: 1px solid var(--line);
+}
+
+.kpi-footer b {
+    font-size: 10px;
+    color: var(--text);
+}
+
+.op-dashboard {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    min-height: 370px;
+    box-shadow: 0 1px 4px rgba(25, 36, 68, 0.08);
+    overflow: hidden;
+}
+
+.op-hero {
+    padding: 9px 12px 16px;
+}
+
+.op-progress-bar {
+    height: 42px;
+    background: #7544d8;
+    border-radius: 9px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 9px;
+    font-size: 11px;
+}
+
+.op-start {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 160px;
+}
+
+.op-pill {
+    background: #f3d9ff;
+    color: #7d21b7;
+    border-radius: 12px;
+    padding: 4px 8px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.op-progress-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.op-track {
+    width: 108px;
+    height: 8px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.op-track span {
+    display: block;
+    width: 0%;
+    height: 100%;
+    background: white;
+    border-radius: 20px;
+}
+
+.op-rows {
+    padding: 0 12px 16px;
+}
+
+.op-row {
+    display: grid;
+    grid-template-columns: 195px 1fr;
+    min-height: 76px;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+}
+
+.op-row:last-child {
+    border-bottom: none;
+}
+
+.op-row-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+}
+
+.op-section-icon {
+    width: 27px;
+    height: 27px;
+    border-radius: 9px;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    flex: 0 0 27px;
+}
+
+.op-section-icon.pink { background: #f50091; }
+.op-section-icon.yellow { background: #ffc72d; }
+.op-section-icon.purple { background: #7043db; }
+
+.task-line {
+    display: flex;
+    align-items: flex-start;
+    min-width: 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+}
+
+.task {
+    width: 92px;
+    min-width: 92px;
+    position: relative;
+    text-align: center;
+    font-size: 9px;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.task:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 56px;
+    width: 60px;
+    height: 1px;
+    background: var(--line);
+    z-index: 0;
+}
+
+.task-circle {
+    position: relative;
+    z-index: 1;
+    margin: auto;
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    background: var(--card);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.task:hover .task-circle {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(61, 49, 120, 0.18);
+}
+
+.task.red { color: #ff274e; }
+.task.yellow { color: #ffbb19; }
+
+.task-label {
+    line-height: 10px;
+    margin-top: 3px;
+    min-height: 20px;
+    color: var(--text);
+}
+
+.badge {
+    position: absolute;
+    z-index: 2;
+    top: -4px;
+    right: 18px;
+    min-width: 13px;
+    height: 13px;
+    padding: 0 3px;
+    border-radius: 9px;
+    background: #d8002b;
+    color: white;
+    font-size: 7px;
+    display: grid;
+    place-items: center;
+}
+
+
+/* ================= CUSTOMIZE ================= */
+
+.ov{
+  position:fixed;
+  inset:0;
+  background:rgba(8,10,25,.5);
+  backdrop-filter:blur(2px);
+  display:none;
+  z-index:90;
+}
+
+.ov.show{
+  display:block;
+}
+
+.panel{
+  position:absolute;
+  right:0;
+  top:0;
+  bottom:0;
+  width:400px;
+  max-width:100%;
+  background:var(--card);
+  padding:22px;
+  overflow-y:auto;
+  box-shadow:var(--shadow);
+}
+
+.panel h2{
+  font-size:16px;
+}
+
+.pre{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:14px 0;
+}
+
+.pre div{
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px;
+  cursor:pointer;
+}
+
+.pre div:hover{
+  border-color:var(--side);
+  background:var(--hover);
+}
+
+.pre b{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:4px;
+}
+
+.grp{
+  font-weight:600;
+  margin:18px 0 6px;
+  font-size:10.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.opt{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:12.5px;
+}
+
+.opt:hover{
+  background:var(--hover);
+}
+
+.opt input{
+  width:15px;
+  height:15px;
+  accent-color:var(--side);
+}
+
+select,
+input[type=text]{
+  padding:9px 12px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  width:100%;
+  font:inherit;
+}
+
+.toast{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:var(--side);
+  color:#fff;
+  padding:11px 18px;
+  border-radius:10px;
+  font-size:12.5px;
+  opacity:0;
+  transform:translateY(8px);
+  transition:.3s;
+  z-index:99;
+}
+
+.toast.show{
+  opacity:1;
+  transform:none;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media(max-width:980px){
+
+  .side{
+    transform:translateX(-100%);
+  }
+
+  .side.show{
+    transform:none;
+  }
+
+  .wrap{
+    margin-left:0;
+  }
+
+  .hamb{
+    display:block;
+  }
+
+  .chip.d,
+  .chip.wt,
+  .sbox{
+    display:none;
+  }
+
+  .w.wide{
+    grid-column:span 1;
+  }
+
+  .av b{
+    display:none;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="side" id="side">
+
+  <div class="brand" onclick="openPage('home')">
+    <div class="lg">Z</div>
+    Zip Suite
+  </div>
+
+  <div class="menu" id="menu"></div>
+
+  <div class="sfoot">
+    <span>v1.0</span>
+    <span>Site #1042</span>
+  </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="wrap">
+
+<header class="top">
+
+  <div class="hamb" onclick="document.getElementById('side').classList.toggle('show')">
+    <i data-ic="menu"></i>
+  </div>
+
+  <div class="sbox">
+    <i data-ic="search"></i>
+    <input
+      placeholder="Search menu..."
+      oninput="filterMenu(this.value)"
+    >
+  </div>
+
+
+  <div class="right">
+
+    <div class="chip d">
+      <i data-ic="calendar"></i>
+      <b id="date"></b>
+    </div>
+
+    <div class="chip">
+      <i data-ic="clock"></i>
+      <b id="time"></b>
+    </div>
+
+    <div class="chip wt">
+      <i data-ic="sun"></i>
+      <b id="weather">--</b>
+    </div>
+
+    <div
+      class="ib"
+      onclick="toggleTheme()"
+      title="Theme"
+    >
+      <i data-ic="moon"></i>
+    </div>
+
+    <div
+      class="ib"
+      onclick="toast('No new notifications')"
+      title="Notifications"
+    >
+      <i data-ic="bell"></i>
+      <span class="dot"></span>
+    </div>
+
+    <div
+      class="ib"
+      onclick="openPage('sys|Settings')"
+      title="Settings"
+    >
+      <i data-ic="sliders"></i>
+    </div>
+
+
+    <!-- PROFILE -->
+
+    <div class="profile" id="profile">
+
+      <div
+        class="av"
+        onclick="this.parentElement.classList.toggle('open')"
+      >
+
+        <i id="avI">U</i>
+
+        <b id="avN">User</b>
+
+        <span class="ico">
+          <i data-ic="down"></i>
+        </span>
+
+      </div>
+
+
+      <div class="pd">
+
+        <div class="ph">
+          <b id="pdN">User</b>
+          <br>
+          <small>Store Manager · Site #1042</small>
+        </div>
+
+        <div class="pi" data-k="sys|My Profile">
+          <i data-ic="user"></i>
+          My Profile
+        </div>
+
+        <div class="pi" data-k="sys|Settings">
+          <i data-ic="sliders"></i>
+          Settings
+        </div>
+
+        <div class="pi" onclick="openPanel()">
+          <i data-ic="grid"></i>
+          Customize Dashboard
+        </div>
+
+        <div class="pi" data-k="sys|Notifications">
+          <i data-ic="bell"></i>
+          Notifications
+        </div>
+
+        <div class="pi" data-k="sys|Change Password">
+          <i data-ic="lock"></i>
+          Change Password
+        </div>
+
+        <div class="pi" data-k="sys|Switch Site">
+          <i data-ic="store"></i>
+          Switch Site
+        </div>
+
+        <div class="pi" data-k="sys|Help & Support">
+          <i data-ic="help"></i>
+          Help & Support
+        </div>
+
+        <div class="pi" data-k="sys|Logout">
+          <i data-ic="logout"></i>
+          Logout
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<main id="view"></main>
+
+</div>
+
+
+<!-- ================= CUSTOMIZE PANEL ================= -->
+
+<div
+  class="ov"
+  id="ov"
+  onclick="if(event.target===this)closePanel()"
+>
+
+  <div class="panel" id="panel"></div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+
+<script>
+
+/* =========================================================
+   ICONS
+========================================================= */
+
+const IC = {
+
+home:
+'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+
+search:
+'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',
+
+moon:
+'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+
+sun:
+'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2"/>',
+
+bell:
+'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+
+sliders:
+'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+
+user:
+'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+
+users:
+'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+
+grid:
+'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>',
+
+calendar:
+'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+
+clock:
+'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+
+right:
+'<path d="M9 18l6-6-6-6"/>',
+
+down:
+'<path d="M6 9l6 6 6-6"/>',
+
+x:
+'<path d="M18 6L6 18M6 6l12 12"/>',
+
+star:
+'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1z"/>',
+
+logout:
+'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+
+lock:
+'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+
+store:
+'<path d="M3 9l1-5h16l1 5M3 9v11h18V9"/>',
+
+help:
+'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+
+dollar:
+'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+
+bar:
+'<path d="M18 20V10M12 20V4M6 20v-6"/>',
+
+trend:
+'<path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>',
+
+package:
+'<path d="M21 16V8l-9-5-9 5v8l9 5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
+
+alert:
+'<path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+
+truck:
+'<path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+
+tag:
+'<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><path d="M7 7h.01"/>',
+
+mega:
+'<path d="M3 11v2a1 1 0 0 0 1 1h3l8 4V6L7 10H4a1 1 0 0 0-1 1zM19 8a5 5 0 0 1 0 8"/>',
+
+trash:
+'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
+
+brief:
+'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+
+layers:
+'<path d="M12 2L2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>',
+
+cart:
+'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
+
+receipt:
+'<path d="M4 2v20l3-2 3 2 3-2 3 2 3-2V2l-3 2-3-2-3 2-3-2z"/><path d="M8 8h8M8 12h8"/>',
+
+menu:
+'<path d="M3 12h18M3 6h18M3 18h18"/>',
+
+beach:
+'<path d="M3 21h18M12 21V10M4 10a8 8 0 0 1 16 0z"/>'
+
+};
+
+
+const svg = n =>
+`<svg viewBox="0 0 24 24">${IC[n] || ''}</svg>`;
+
+const ic = n =>
+`<span class="ico">${svg(n)}</span>`;
+
+
+function hydrate(){
+
+  document
+    .querySelectorAll('i[data-ic]')
+    .forEach(e=>{
+      e.className='ico';
+      e.innerHTML=svg(e.dataset.ic);
+      e.removeAttribute('data-ic');
+    });
+
+}
+
+
+/* =========================================================
+   MODULE IMAGE URL
+========================================================= */
+
+const IMG =
+'https://agcdn.altametrics.com/releaseHubWorks/agassets/v3/assets/images/';
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+const MENU = [
+
+{
+  id:'schedule',
+  name:'Zip Schedules',
+  short:'Scheduling',
+  color:'logo-schedule',
+  logo:IMG+'account/svg/ZipSchedules_white.svg',
+
+  items:[
+    'Dashboard',
+    'Schedule',
+    'Site KPI Stats',
+    'Standard Shifts',
+    'Employee Standard Shifts',
+
+    {
+      n:'Team Center',
+      c:[
+        'Requests',
+        'My Schedule',
+        'Availability',
+        'Time Off',
+        'Contacts',
+        'Site Schedule',
+        'Restricted Time Off'
+      ]
+    },
+
+    {
+      n:'Reports',
+      c:[
+        'Schedule Report',
+        'Daily Coverage Report',
+        'Time Off Report',
+        'Monthly Schedule Report',
+        'Notes and Broadcast Report',
+        'Employee Certification Report',
+        'Employee Availability Report'
+      ]
+    },
+
+    'Cloud Library',
+    'Employees'
+  ]
+},
+
+{
+  id:'clock',
+  name:'Zip Clock',
+  short:'Timekeeping',
+  color:'logo-clock',
+  logo:IMG+'account/svg/zipclock_white.svg',
+
+  items:[
+    'New Dashboard',
+    'Site Clock',
+    'My Punches',
+    'Punch Management',
+    'Payroll Management',
+
+    {
+      n:'Reports',
+      c:[
+        'Employee Performance Report',
+        'Punch Management Report',
+        'Employee Violation Report',
+        'Follow The Trail Of Payroll',
+        'Payroll Report',
+        'Daily Punch Report',
+        'Ignored Punch Report',
+        'Notes and Broadcast Report',
+        'Extra Pay Report',
+        'Department Payroll Report',
+        'Store Summary Report',
+        'Job Code Payroll Report',
+        'Punch Acknowledgement Report'
+      ]
+    },
+
+    'Time Clock Devices',
+    'Employees'
+  ]
+},
+
+{
+  id:'forecast',
+  name:'Zip Forecasting',
+  short:'Forecasting',
+  color:'logo-forecast',
+  logo:IMG+'account/svg/ZipForecast_white.svg',
+
+  items:[
+    'Actual Sales',
+    'Events',
+    'Employees'
+  ]
+},
+
+{
+  id:'inventory',
+  name:'Zip Inventory',
+  short:'Inventory',
+  color:'logo-inventory',
+  logo:IMG+'zipInventory/svg/zipInventory-white.svg',
+
+  items:[
+    'Dashboard',
+    'Invoices',
+    'Credit Memo',
+    'Transfer',
+    'Inventory',
+    'Actual Sales',
+    'Forecasted Sales',
+    'Menu Mix',
+    'On Hand',
+    'Waste',
+    'Supplier Item Price List',
+
+    {
+      n:'Reports',
+      c:[
+        'GL COGS Export Report',
+        'Cumulative Variance Report',
+        'Recipe Report',
+        'Ingredient Usage Report'
+      ]
+    },
+
+    'User Management'
+  ]
+},
+
+{
+  id:'ordering',
+  name:'Zip Ordering',
+  short:'Ordering',
+  color:'logo-ordering',
+  logo:IMG+'account/svg/zipOrdering_white.svg',
+
+  items:[
+    'Dashboard',
+    'Ordering',
+    'Ordering Pro',
+    'Historical Orders',
+    'Invoices',
+    'Credit Memo',
+    'Order Guides',
+
+    {
+      n:'Alert Setup',
+      c:[
+        'High Order Quantity Alert',
+        'Low Inventory Alert'
+      ]
+    },
+
+    'Supplier Item Price List',
+
+    {
+      n:'Reports',
+      c:[
+        'Price Trend Report'
+      ]
+    },
+
+    'Employees'
+  ]
+},
+
+];
+
+
+/* =========================================================
+   DASHBOARD WIDGETS (Presets retain underlying support)
+========================================================= */
+
+const WID = {
+  sales:{g:'Sales',i:'dollar',t:'Sales Today',h:()=>`<div class="big">$12,480</div><span class="up">+8.2%</span><span class="mut">vs last week</span>`},
+  salesChart:{g:'Sales',i:'bar',t:'Weekly Sales',wide:1,h:()=>`<div class="bars">${[55,62,48,70,85,95,78].map((v,i)=>`<div style="height:${v}\%"><span>${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</span></div>`).join('')}</div><div style="height:22px"></div>`},
+  onshift:{g:'Team',i:'users',t:'Employees On Shift',h:()=>`<div class="big">24</div><span class="mut">of 31 scheduled</span>`},
+  shifts:{g:'Team',i:'clock',t:"Today's Shifts",h:()=>`<table><tr><th>Name</th><th>Shift</th><th>Role</th></tr><tr><td>Aman</td><td>9–5</td><td>Cashier</td></tr><tr><td>Riya</td><td>11–7</td><td>Cook</td></tr><tr><td>Karan</td><td>3–11</td><td>Manager</td></tr></table>`},
+  timeoff:{g:'Team',i:'beach',t:'Pending Time Off',h:()=>`<div class="big">3</div><span class="mut">requests waiting</span><br><br><button class="btn g" onclick="openPage('schedule|Team Center|Requests')">Review</button>`},
+  coverage:{g:'Team',i:'layers',t:'Coverage Today',h:()=>`<span class="mut">Morning</span><div class="prog"><i style="width:90%"></i></div><span class="mut">Afternoon</span><div class="prog"><i style="width:70%"></i></div><span class="mut">Night</span><div class="prog"><i style="width:55%"></i></div>`},
+  punches:{g:'Clock',i:'clock',t:'Live Punches',h:()=>`<div class="li"><span>Aman</span><span class="up">IN 8:58</span></div><div class="li"><span>Riya</span><span class="up">IN 10:55</span></div><div class="li"><span>Sana</span><span class="dn">Late 12 min</span></div>`},
+  labor:{g:'Clock',i:'brief',t:'Labor Cost %',h:()=>`<div class="big">27.4%</div><div class="prog"><i style="width:27%"></i></div><span class="mut">Target 30%</span>`},
+  violations:{g:'Clock',i:'alert',t:'Punch Violations',h:()=>`<div class="big">2</div><span class="mut">missed breaks today</span>`},
+  lowinv:{g:'Inventory',i:'package',t:'Low Inventory',h:()=>`<div class="li"><span>Cheese</span><span class="dn">4 left</span></div><div class="li"><span>Cups</span><span class="dn">12 left</span></div><div class="li"><span>Buns</span><span class="dn">20 left</span></div>`},
+  waste:{g:'Inventory',i:'trash',t:'Waste Today',h:()=>`<div class="big">$142</div><span class="dn">+3%</span><span class="mut">vs avg</span>`},
+  cogs:{g:'Inventory',i:'receipt',t:'COGS %',h:()=>`<div class="big">31.2%</div><div class="prog"><i style="width:31%"></i></div><span class="mut">Target 32%</span>`},
+  orders:{g:'Ordering',i:'cart',t:'Orders To Approve',h:()=>`<div class="big">6</div><span class="mut">pending orders</span><br><br><button class="btn g" onclick="openPage('ordering|Ordering')">Open Ordering</button>`},
+  deliveries:{g:'Ordering',i:'truck',t:'Upcoming Deliveries',h:()=>`<div class="li"><span>Sysco</span><span class="mut">Tomorrow</span></div><div class="li"><span>Pepsi</span><span class="mut">Thu</span></div>`},
+  shortcuts:{g:'General',i:'star',t:'My Shortcuts',h:()=>S.pins.length?S.pins.map(k=>`<span class="tag" onclick="openPage('${k}')">${lab(k)}</span>`).join(''):`<span class="mut">Kisi page pe jaake "Pin to Home" dabao</span>`},
+  notes:{g:'General',i:'mega',t:'Notes & Broadcast',h:()=>`<div class="li"><span>Staff meeting Friday 4 PM</span></div><div class="li"><span>New uniform policy</span></div>`}
+};
+
+
+const PRESETS={
+  manager:{n:'Store Manager',i:'store',d:'Sales, team & alerts',w:['sales','onshift','labor','lowinv','salesChart','shifts','timeoff','shortcuts']},
+  sched:{n:'Scheduler',i:'calendar',d:'Shifts & coverage',w:['onshift','coverage','shifts','timeoff','notes','shortcuts']},
+  payroll:{n:'Payroll',i:'clock',d:'Punches & labor',w:['punches','labor','violations','onshift','shortcuts']},
+  stock:{n:'Inventory & Order',i:'package',d:'Stock & orders',w:['lowinv','waste','cogs','orders','deliveries','shortcuts']}
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const S = JSON.parse(localStorage.getItem('zipSuiteDemo') || '{}');
+S.name = S.name || 'User';
+S.dark = !!S.dark;
+S.landing = S.landing || 'home';
+S.pins = S.pins || ['schedule|Schedule', 'clock|My Punches'];
+S.widgets = S.widgets || PRESETS.manager.w.slice();
+
+const save = () => localStorage.setItem('zipSuiteDemo', JSON.stringify(S));
+const $ = id => document.getElementById(id);
+
+
+function toast(t){
+  const e = $('toast');
+  e.textContent = t;
+  e.classList.add('show');
+  setTimeout(()=>{ e.classList.remove('show'); },1800);
+}
+
+
+function lab(k){
+  const p = k.split('|');
+  const m = MENU.find(x=>x.id===p[0]);
+  return (m ? m.name+' › ' : '') + p.slice(1).join(' › ');
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function kids(items,path){
+  return items.map(it=>{
+    if(typeof it === 'string'){
+      const k = [...path,it].join('|');
+      return `<div class="mi" data-k="${k}"><span class="t">${it}</span></div>`;
+    }
+    return `
+      <div class="grpx">
+        <div class="mi" data-t="1">
+          <span class="t">${it.n}</span>
+          <span class="arrow">${ic('right')}</span>
+        </div>
+        <div class="children">
+          ${kids(it.c,[...path,it.n])}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+
+function buildMenu(){
+  $('menu').innerHTML = `
+    <div class="mi" data-k="home">
+      ${ic('home')}
+      <span class="t">Home</span>
+    </div>
+    <div class="label">Modules</div>
+    ${MENU.map(m=>`
+      <div class="mod">
+        <div class="mi" data-t="1">
+          <div class="mod-logo ${m.color}">
+            <img src="${m.logo}" alt="${m.name}" onerror="this.style.display='none'">
+          </div>
+          <div class="mod-name">${m.name}</div>
+          <span class="arrow">${ic('right')}</span>
+        </div>
+        <div class="children">
+          ${kids(m.items,[m.id])}
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+
+document.addEventListener('click',e=>{
+  const t = e.target.closest('[data-t]');
+  if(t){
+    t.parentElement.classList.toggle('open');
+    return;
+  }
+  const k = e.target.closest('[data-k]');
+  if(k){
+    openPage(k.dataset.k);
+    $('side').classList.remove('show');$('profile').classList.remove('open');
+    return;
+  }
+  if(!e.target.closest('.profile')){
+    $('profile').classList.remove('open');
+  }
+});
+
+
+function filterMenu(q){
+  q = q.toLowerCase();
+  document.querySelectorAll('#menu .mi[data-k]').forEach(el=>{
+    const hit = !q || el.textContent.toLowerCase().includes(q);
+    el.style.display = hit ? '' : 'none';
+    if(q && hit){
+      let p = el.parentElement;
+      while(p && p.id !== 'menu'){
+        if(p.classList.contains('mod') || p.classList.contains('grpx')){
+          p.classList.add('open');
+        }
+        p = p.parentElement;
+      }
+    }
+  });
+}
+
+
+function mark(k){
+  document.querySelectorAll('#menu .mi').forEach(x=>x.classList.remove('active'));
+  const el = document.querySelector(`#menu [data-k="${k}"]`);
+  if(el){
+    el.classList.add('active');
+    let p = el.parentElement;
+    while(p && p.id !== 'menu'){
+      if(p.classList.contains('mod') || p.classList.contains('grpx')){
+        p.classList.add('open');
+      }
+      p = p.parentElement;
+    }
+  }
+}
+
+
+/* =========================================================
+   PAGES
+========================================================= */
+
+function openPage(k){
+  mark(k);
+  const v = $('view');
+  window.scrollTo(0,0);
+
+  if(k === 'home'){
+    v.innerHTML = home();
+    initOperationsDashboard();
+  }
+  else if(k === 'sys|Settings'){
+    v.innerHTML = settings();
+  }
+  else if(k === 'sys|My Profile'){
+    v.innerHTML = profile();
+  }
+  else if(k === 'sys|Logout'){
+    v.innerHTML = `
+      <div class="empty">
+        <div class="wi">${svg('logout')}</div>
+        <h2>You have been logged out</h2>
+        <p style="margin:6px 0 16px">Aap successfully logout ho gaye.</p>
+        <button class="btn" onclick="openPage('home')">Login again</button>
+      </div>
+    `;
+  }
+  else{
+    const p = k.split('|');
+    const sys = p[0] === 'sys';
+    const pin = S.pins.includes(k);
+    v.innerHTML = `
+      <div class="bar">
+        <div>
+          <div class="crumb">${sys ? 'Account' : lab(k).split(' › ').slice(0,-1).join(' › ')}</div>
+          <h1>${p[p.length-1]}</h1>
+        </div>
+        ${sys ? '' : `<button class="btn g" onclick="pinIt('${k}')">${svg('star')}${pin ? 'Pinned' : 'Pin to Home'}</button>`}
+      </div>
+      <div class="ph2">
+        <h3 style="color:var(--text);font-size:15px;margin-bottom:6px">${p[p.length-1]}</h3>
+        <p>Yahan is page ka content aayega.</p>
+      </div>
+    `;
+  }
+  hydrate();
+}
+
+
+function pinIt(k){
+  const i = S.pins.indexOf(k);
+  if(i > -1){
+    S.pins.splice(i,1);
+    save();
+    openPage(k);
+    toast('Removed from Home');
+  } else {
+    S.pins.push(k);
+    save();
+    openPage(k);
+    toast('Pinned to Home');
+  }
+}
+
+
+/* =========================================================
+   HOME (OPERATIONS DASHBOARD INTEGRATION)
+========================================================= */
+
+function home(){
+  return `
+    <div class="op-app">
+
+        <!-- ================= TOP BAR ================= -->
+        <div class="op-topbar">
+            <button class="op-select" id="taskFilter">
+                <span>▽ &nbsp; Pending Tasks</span>
+                <span>⌄</span>
+            </button>
+
+            <div class="op-date-control">
+                <button class="op-arrow" id="prevDay">‹</button>
+                <div class="op-date">
+                    ▣
+                    <span id="dateText">06/10/2026</span>
+                </div>
+                <button class="op-arrow" id="nextDay">›</button>
+            </div>
+
+            <button class="op-pdf-btn" title="Print / PDF" id="printBtn">▧</button>
+        </div>
+
+        <!-- ================= KPI CARDS ================= -->
+        <section class="kpi-wrap">
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon blue">◉</span> Forecasted Sales <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon violet">♧</span> Labor % <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">0.00%</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>0.00%</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon red">♨</span> Time Loss <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon mint">♧</span> Actual Sales <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon orange">◉</span> Labor $ <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon green">◈</span> Actual Usage % <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon purple">◉</span> Ideal Usage % <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-head"><span class="kpi-icon orange">◉</span> Usage Variance <span class="kpi-chart">▥</span></div>
+                <div class="kpi-value">NA</div>
+                <div class="kpi-footer">
+                    <div>Yesterday<br><b>NA</b></div>
+                    <div>WTD<br><b>NA</b></div>
+                </div>
+            </article>
+        </section>
+
+        <!-- ================= MAIN DASHBOARD ================= -->
+        <main class="op-dashboard">
+            <div class="op-hero">
+                <!-- START OF DAY -->
+                <div class="op-progress-bar">
+                    <div class="op-start">
+                        <strong>Start of Day</strong>
+                        <span class="op-pill">11:00 AM</span>
+                    </div>
+                    <div class="op-progress-right">
+                        <span>0/15 (%)</span>
+                        <div class="op-track"><span></span></div>
+                    </div>
+                </div>
+
+                <div class="op-rows">
+                    <!-- FORECAST -->
+                    <section class="op-row">
+                        <div class="op-row-title">
+                            <span class="op-section-icon purple">↗</span>
+                            <span>Forecast</span>
+                        </div>
+                        <div class="task-line">
+                            <div class="task red" data-name="Review Forecast">
+                                <span class="task-circle">▰</span>
+                                <span class="badge">1</span>
+                                <div class="task-label">Review<br>Forecast</div>
+                            </div>
+                            <div class="task yellow" data-name="Actual Sales">
+                                <span class="task-circle">$</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Actual<br>Sales</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- FOOD MANAGEMENT -->
+                    <section class="op-row">
+                        <div class="op-row-title">
+                            <span class="op-section-icon pink">▣</span>
+                            <span>Food Management</span>
+                        </div>
+                        <div class="task-line">
+                            <div class="task yellow" data-name="Take Order">
+                                <span class="task-circle">▤</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Take Order</div>
+                            </div>
+                            <div class="task yellow" data-name="Inventory Alerts">
+                                <span class="task-circle">♟</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Inventory<br>Alerts</div>
+                            </div>
+                            <div class="task yellow" data-name="Inventory VIT Alerts">
+                                <span class="task-circle">♟</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Inventory<br>VIT Alerts</div>
+                            </div>
+                            <div class="task yellow" data-name="Ordering Alerts">
+                                <span class="task-circle">▣</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Ordering<br>Alerts</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LABOR MANAGEMENT -->
+                    <section class="op-row">
+                        <div class="op-row-title">
+                            <span class="op-section-icon yellow">♟</span>
+                            <span>Labor Management</span>
+                        </div>
+                        <div class="task-line">
+                            <div class="task yellow" data-name="Schedule">
+                                <span class="task-circle">▦</span>
+                                <span class="badge">1</span>
+                                <div class="task-label">Schedule</div>
+                            </div>
+                            <div class="task yellow" data-name="Today's Pending Checklist">
+                                <span class="task-circle">▤</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Today's<br>Pending<br>Checklist</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- PAYROLL MANAGEMENT -->
+                    <section class="op-row">
+                        <div class="op-row-title">
+                            <span class="op-section-icon purple">♧</span>
+                            <span>Payroll Management</span>
+                        </div>
+                        <div class="task-line">
+                            <div class="task red" data-name="Non Posted Payroll">
+                                <span class="task-circle">▣</span>
+                                <span class="badge">7</span>
+                                <div class="task-label">Non Posted<br>Payroll</div>
+                            </div>
+                            <div class="task yellow" data-name="Previous Day Time Loss Summary">
+                                <span class="task-circle">◒</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Previous<br>Day Time<br>Loss<br>Summary</div>
+                            </div>
+                            <div class="task yellow" data-name="Previous Day Punches">
+                                <span class="task-circle">▣</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Previous<br>Day<br>Punches</div>
+                            </div>
+                            <div class="task yellow" data-name="Pending Punch Acknowledgement">
+                                <span class="task-circle">◎</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Pending<br>Punch<br>Acknowledgement</div>
+                            </div>
+                            <div class="task yellow" data-name="Mismatch Punches">
+                                <span class="task-circle">◎</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Mismatch<br>Punches</div>
+                            </div>
+                            <div class="task yellow" data-name="Overlap Punches">
+                                <span class="task-circle">▤</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Overlap<br>Punches</div>
+                            </div>
+                            <div class="task yellow" data-name="Long Hour Shift">
+                                <span class="task-circle">◷</span>
+                                <span class="badge">0</span>
+                                <div class="task-label">Long Hour<br>Shift</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+  `;
+}
+
+
+function initOperationsDashboard(){
+  const dateText = document.getElementById("dateText");
+  if(!dateText) return;
+
+  let currentDate = new Date(2026, 9, 6);
+
+  function formatDate(date) {
+    return String(date.getDate()).padStart(2, "0") + "/" +
+           String(date.getMonth() + 1).padStart(2, "0") + "/" +
+           date.getFullYear();
+  }
+
+  function updateDate() {
+    dateText.textContent = formatDate(currentDate);
+  }
+
+  const prevBtn = document.getElementById("prevDay");
+  if(prevBtn){
+    prevBtn.addEventListener("click", function () {
+      currentDate.setDate(currentDate.getDate() - 1);
+      updateDate();
+    });
+  }
+
+  const nextBtn = document.getElementById("nextDay");
+  if(nextBtn){
+    nextBtn.addEventListener("click", function () {
+      currentDate.setDate(currentDate.getDate() + 1);
+      updateDate();
+    });
+  }
+
+  const taskFilter = document.getElementById("taskFilter");
+  if(taskFilter){
+    taskFilter.addEventListener("click", function () {
+      toast("Pending Tasks filter selected");
+    });
+  }
+
+  document.querySelectorAll(".task").forEach(function (task) {
+    task.addEventListener("click", function () {
+      toast(task.dataset.name + " selected");
+    });
+  });
+
+  const printBtn = document.getElementById("printBtn");
+  if(printBtn){
+    printBtn.addEventListener("click", function () {
+      window.print();
+    });
+  }
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function profile(){
+  return `
+    <div class="crumb">Account</div>
+    <h1 style="margin-bottom:18px">My Profile</h1>
+    <div class="w" style="max-width:460px">
+      <p class="mut" style="margin-bottom:8px">Display name</p>
+      <input type="text" id="nm" value="${S.name}">
+      <br><br>
+      <button class="btn" onclick="S.name=$('nm').value||'User';save();applyName();toast('Profile saved')">Save</button>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function settings(){
+  const opts = [
+    ['home','My Dashboard (Operations Dashboard)']
+  ].concat(
+    MENU.flatMap(m =>
+      m.items.filter(i => typeof i==='string').map(i => [m.id+'|'+i, m.name+' › '+i])
+    )
+  );
+
+  return `
+    <div class="crumb">Account</div>
+    <h1 style="margin-bottom:18px">Settings</h1>
+    <div class="grid">
+      <div class="w">
+        <div class="wh">
+          <div class="wi">${svg('home')}</div>
+          <h3>Landing page</h3>
+        </div>
+        <p class="mut" style="margin-bottom:10px">Login ke baad sabse pehle kaunsa page khule</p>
+        <select id="ls">
+          ${opts.map(o=>`<option value="${o[0]}" ${S.landing===o[0]?'selected':''}>${o[1]}</option>`).join('')}
+        </select>
+        <br><br>
+        <button class="btn" onclick="S.landing=$('ls').value;save();toast('Landing page saved')">Save</button>
+      </div>
+      <div class="w">
+        <div class="wh">
+          <div class="wi">${svg('moon')}</div>
+          <h3>Appearance</h3>
+        </div>
+        <label class="opt">
+          <input type="checkbox" ${S.dark ? 'checked' : ''} onchange="toggleTheme()">
+          Dark mode
+        </label>
+      </div>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   CUSTOMIZE DASHBOARD (Preset support)
+========================================================= */
+
+function openPanel(){
+  const groups = {};
+  Object.keys(WID).forEach(id=>{
+    (groups[WID[id].g] = groups[WID[id].g] || []).push(id);
+  });
+
+  $('panel').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>Customize Dashboard</h2>
+      <span style="cursor:pointer;color:var(--muted)" onclick="closePanel()">${ic('x')}</span>
+    </div>
+    <p class="mut" style="margin-top:4px">Ready preset lo ya khud select karo.</p>
+    <div class="pre">
+      ${Object.keys(PRESETS).map(k=>`
+        <div onclick="usePreset('${k}')">
+          <b>${ic(PRESETS[k].i)}${PRESETS[k].n}</b>
+          <span class="mut">${PRESETS[k].d}</span>
+        </div>
+      `).join('')}
+    </div>
+    ${Object.keys(groups).map(g=>`
+      <div class="grp">${g}</div>${groups[g].map(id=>`
+        <label class="opt">
+          <input type="checkbox" value="${id}" ${S.widgets.includes(id)?'checked':''}>
+          ${ic(WID[id].i)}
+          ${WID[id].t}
+        </label>
+      `).join('')}
+    `).join('')}
+    <div style="display:flex;gap:10px;margin-top:22px">
+      <button class="btn" onclick="applyPanel()">Apply</button>
+      <button class="btn g" onclick="S.widgets=[];save();closePanel();openPage('home')">Clear all</button>
+    </div>
+  `;
+  $('ov').classList.add('show');
+}
+
+
+function closePanel(){
+  $('ov').classList.remove('show');
+}
+
+
+function usePreset(k){
+  S.widgets = PRESETS[k].w.slice();
+  save();
+  openPanel();
+  toast(PRESETS[k].n+' applied');
+}
+
+
+function applyPanel(){
+  S.widgets = [...document.querySelectorAll('#panel input[type=checkbox]:checked')].map(i=>i.value);
+  save();
+  closePanel();
+  openPage('home');
+  toast('Dashboard updated');
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function applyName(){
+  $('avN').textContent = S.name;
+  $('pdN').textContent = S.name;
+  $('avI').textContent = S.name[0].toUpperCase();
+}
+
+
+function toggleTheme(){
+  S.dark = !S.dark;
+  document.body.classList.toggle('dark', S.dark);
+  save();
+}
+
+
+function tick(){
+  const d = new Date();
+  $('time').textContent = d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});$('date').textContent = d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+}
+
+
+function weather(){
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=28.57&longitude=77.32&current_weather=true')
+  .then(r=>r.json())
+  .then(j=>{ $('weather').textContent = Math.round(j.current_weather.temperature)+'°C Noida'; })
+  .catch(()=>{ $('weather').textContent = '28°C Noida'; });
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+document.body.classList.toggle('dark', S.dark);
+buildMenu();
+applyName();
+tick();
+setInterval(tick, 30000);
+weather();
+openPage(S.landing);
+hydrate();
+
+</script>
+
+</body>
+</html>
